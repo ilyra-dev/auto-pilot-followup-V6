@@ -114,6 +114,44 @@ def is_business_day(date=None):
     return date.weekday() < 5
 
 
+def is_within_business_hours(country=None, start_hour=None, end_hour=None):
+    """
+    Check if the current time is within business hours for a given country.
+
+    Args:
+        country: Country name (maps to timezone via COUNTRY_TIMEZONES).
+                 If None or unknown, defaults to UTC.
+        start_hour: Override business hours start (default: BUSINESS_HOURS_START from config)
+        end_hour: Override business hours end (default: BUSINESS_HOURS_END from config)
+
+    Returns:
+        True if current time is within business hours (Mon-Fri, start-end)
+    """
+    from config import COUNTRY_TIMEZONES, BUSINESS_HOURS_START, BUSINESS_HOURS_END
+
+    if start_hour is None:
+        start_hour = BUSINESS_HOURS_START
+    if end_hour is None:
+        end_hour = BUSINESS_HOURS_END
+
+    now = datetime.now()
+
+    # Adjust to client timezone if country is known
+    if country and country in COUNTRY_TIMEZONES:
+        try:
+            import pytz
+            tz = pytz.timezone(COUNTRY_TIMEZONES[country])
+            now = datetime.now(tz)
+        except Exception:
+            pass  # Fall back to local time
+
+    # Check weekday (Mon=0 .. Sun=6)
+    if now.weekday() >= 5:
+        return False
+
+    return start_hour <= now.hour < end_hour
+
+
 if __name__ == "__main__":
     from datetime import datetime, timedelta
 

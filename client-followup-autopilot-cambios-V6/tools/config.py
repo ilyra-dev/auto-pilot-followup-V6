@@ -80,6 +80,9 @@ FOLLOWUP_SCHEDULE = {
 # Comma-separated names as they appear in Notion's Owner field
 CC_ALWAYS_NAMES = os.getenv("CC_ALWAYS_NAMES", "César Montes, Diana Farje, Piero")
 
+# Fallback: comma-separated emails if Notion owner resolution fails
+CC_ALWAYS_EMAILS = os.getenv("CC_ALWAYS_EMAILS", "")
+
 # ─── Language Configuration ─────────────────────────────────────────────────
 SUPPORTED_LANGUAGES = ("ES", "EN", "PT")
 
